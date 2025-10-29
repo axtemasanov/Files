@@ -1,1 +1,51 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Чтение ключей из JSON</title>
+</head>
+<body>
+    <input type="text" id="keyInput" placeholder="Введите ключ (например: name)" value="name">
+    <button onclick="getValue()">Получить значение</button>
+    <div id="result" style="margin-top: 20px; padding: 10px; border: 1px solid #ccc;"></div>
+
+    <script>
+        const JSON_URL = 'https://raw.githubusercontent.com/axtemasanov/Files/main/data.json';
+        let jsonData = null;
+
+        // Загружаем JSON при старте
+        async function loadJSON() {
+            try {
+                const response = await fetch(JSON_URL);
+                jsonData = await response.json();
+                console.log('JSON загружен:', jsonData);
+            } catch (error) {
+                console.error('Ошибка загрузки:', error);
+            }
+        }
+
+        // Получить значение по ключу
+        function getValue() {
+            if (!jsonData) {
+                document.getElementById('result').innerHTML = 'Данные еще не загружены';
+                return;
+            }
+
+            const key = document.getElementById('keyInput').value.trim();
+            
+            if (jsonData.hasOwnProperty(key)) {
+                const value = jsonData[key];
+                document.getElementById('result').innerHTML = 
+                    `<strong>${key}:</strong> ${JSON.stringify(value)}`;
+            } else {
+                document.getElementById('result').innerHTML = 
+                    `Ключ "<strong>${key}</strong>" не найден. Доступные ключи: ${Object.keys(jsonData).join(', ')}`;
+            }
+        }
+
+        // Автозагрузка при старте
+        loadJSON();
+    </script>
+</body>
+</html>
